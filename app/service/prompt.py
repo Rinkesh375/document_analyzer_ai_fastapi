@@ -19,8 +19,10 @@ CONTRACT_ANALYSIS_PROMPT="""
     ],
     "risk_flags": [
         {{
-            "risk_title": "Short title of the risk",
-            "description": "What the risk is",
+            "flag_title": "Short title of the risk",
+            "flag_text": "The relevant text from the contract that creates this risk",
+            "explanation": "What the risk is and why it matters",
+            "is_critical": true or false,
             "risk_level": "low" or "medium" or "high" or "critical",
             "recommendation": "What to do about it",
             "clause_reference": "Which clause this refers to"
@@ -68,8 +70,10 @@ CLAUSES:
 
 For each risk found, provide:
 {{
-    "risk_title": "Short title",
-    "description": "What makes this risky",
+    "flag_title": "Short title",
+    "flag_text": "The relevant text from the contract that creates this risk",
+    "explanation": "What makes this risky",
+    "is_critical": true or false,
     "risk_level": "low" or "medium" or "high" or "critical",
     "recommendation": "What to do",
     "clause_reference": "Which clause"
