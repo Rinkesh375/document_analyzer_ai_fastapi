@@ -3,8 +3,8 @@ import os
 from uuid import uuid4
 from config import ALLOWED_EXTENSIONS, MAX_FILE_SIZE, UPLOAD_DIR
 from pathlib import Path
-from service.document_parser import extract_text
-from model import Contract
+from app.service.document_parser import extract_text
+from app.model import Contract
 from database import contracts_collection
 
 router = APIRouter(prefix="/contracts", tags=["contacts"])
