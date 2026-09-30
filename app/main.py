@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from database import init_indexes
+from routes.contracts import router as contract_router
 
 
 @asynccontextmanager
@@ -40,3 +41,6 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+app.include_router(contract_router)
