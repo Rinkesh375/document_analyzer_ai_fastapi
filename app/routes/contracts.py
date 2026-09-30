@@ -1,9 +1,11 @@
-from fastapi import APIRouter, UploadFile, File , HTTPException, status
+from fastapi import APIRouter, UploadFile, File, HTTPException, status
 import os
 from uuid import uuid4
-from config import ALLOWED_EXTENSIONS, MAX_FILE_SIZE,UPLOAD_DIR
+from config import ALLOWED_EXTENSIONS, MAX_FILE_SIZE, UPLOAD_DIR
 from pathlib import Path
 from service.document_parser import extract_text
+from model import Contract
+from database import contracts_collection
 
 router = APIRouter(prefix="/contracts", tags=["contacts"])
 
@@ -13,9 +15,7 @@ MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE * 1024 * 1024
 
 
 @router.post("/upload", status_code=status.HTTP_201_CREATED)
-async def upload_contract(
-    file: UploadFile = File(...)
-):
+async def upload_contract(file: UploadFile = File(...)):
     """
     Upload a PDF or TXT contract for analysis.
 
@@ -115,16 +115,34 @@ async def upload_contract(
 
     finally:
         await file.close()
-        
-    parsed = extract_text(file_path)    
+
+    parsed = extract_text(file_path)
+
+    contract_data = Contract(
+        filename=unique_filename,
+        original_name=file.filename,
+        text_content=parsed["text"] if isinstance(parsed, dict) else parsed,
+        page_count=(
+            len(parsed["page_count"].splitlines())
+            if isinstance(parsed, dict)
+            else len(parsed.splitlines())
+        ),
+        word_count=(
+            len(parsed["word_count"].split())
+            if isinstance(parsed, dict)
+            else len(parsed.split())
+        ),
+    )
+
+    doc = contract_data.model_dump()
+    result = contracts_collection.insert_one(doc)
+    contract_data.id = str(result.inserted_id)
 
     # --------------------------------------------------
     # 6. Return success response
     # --------------------------------------------------
     return {
-        "message": "Contract uploaded successfully.",
-        "filename": unique_filename,
-        "original_filename": original_filename,
-        "size_bytes": total_size,
-        "size_mb": round(total_size / (1024 * 1024), 2),
+        "message": "File uploaded and processed successfully",
+        "contract": contract_data.model_dump(),
+        "id": contract_data.id,
     }
