@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from database import init_indexes
 from app.routes.contracts import router as contract_router
+from app.routes.analysis import router as analysis_router
 
 
 @asynccontextmanager
@@ -44,3 +45,4 @@ def health_check():
 
 
 app.include_router(contract_router)
+app.include_router(analysis_router)

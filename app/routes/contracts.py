@@ -6,6 +6,8 @@ from pathlib import Path
 from app.service.document_parser import extract_text
 from app.model import Contract
 from database import contracts_collection
+from bson import ObjectId
+from bson.errors import InvalidId
 
 router = APIRouter(prefix="/contracts", tags=["contacts"])
 
@@ -145,4 +147,58 @@ async def upload_contract(file: UploadFile = File(...)):
         "message": "File uploaded and processed successfully",
         "contract": contract_data.model_dump(),
         "id": contract_data.id,
+    }
+
+
+
+
+@router.get("/")
+async def list_contracts():
+    """
+    List all uploaded contracts.
+    """
+    contracts = []
+
+    for doc in contracts_collection.find({},{"text_content":0}):
+        contract = Contract(**doc)
+        contract.id = str(doc["_id"])
+        contracts.append(contract.model_dump())
+
+    return {"contracts": contracts}
+
+
+
+@router.get("/{contract_id}")
+async def get_contract(contract_id: str):
+    """
+    Retrieve a specific contract by its ID.
+    """
+
+    # Validate MongoDB ObjectId
+    try:
+        object_id = ObjectId(contract_id)
+    except InvalidId:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid contract ID"
+        )
+
+    # Find contract using ObjectId
+    doc = contracts_collection.find_one({
+        "_id": object_id
+    })
+
+    if not doc:
+        raise HTTPException(
+            status_code=404,
+            detail="Contract not found"
+        )
+
+    # Convert MongoDB _id to our API id
+    doc["id"] = str(doc.pop("_id"))
+
+    contract = Contract(**doc)
+
+    return {
+        "contract": contract.model_dump()
     }
