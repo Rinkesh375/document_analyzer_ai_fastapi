@@ -15,4 +15,5 @@ ALLOWED_EXTENSIONS = [".pdf",".txt"]
 
 MAX_FILE_SIZE = 10
 
+
 UPLOAD_DIR = "uploads"
