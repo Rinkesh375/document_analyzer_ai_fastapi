@@ -1,3 +1,25 @@
-v-9 started 01:08:59
+The Best Multi-Model Strategy for Full-Stack Development
+
+A multi-model workflow assigns different development tasks to the model best suited for each job, balancing code quality, development speed, and cost.
+
+1. UI/UX Design & Front-End Architecture
+Recommended Model: Claude Sonnet 5.5
+Why: Excels at generating clean React, Next.js, and Vue code, structuring Tailwind CSS, building reusable components, and handling rapid visual iterations.
+
+2. Core Backend & Agentic Automation
+Recommended Model: Claude Opus 5.5
+Why: Suited to complex engineering tasks, including database schema design (PostgreSQL/MongoDB), API development, authentication (JWT/OAuth), and coordinating multi-file changes through agentic developer tools such as Claude Code.
+
+3. High-Volume Subtasks & Refactoring
+Recommended Model: Claude Haiku 5.5
+Why: Useful for lightweight, repetitive tasks such as generating basic unit tests, documenting code, checking syntax, and handling straightforward refactoring at lower cost.
+
+Recommended Workflow:
+1. Use Sonnet for frontend design, components, styling, and architecture.
+2. Use Opus for backend logic, database design, APIs, authentication, and complex coding workflows.
+3. Use Haiku for routine tests, documentation, simple code checks, and small refactoring tasks.
+4. Integrate and validate the application for consistency, security, performance, and correctness.
+
+
 
 
